@@ -1,0 +1,106 @@
+@import '~@angular/material/theming';
+
+// Include mat-core so we can monkey patch
+@include mat-core();
+
+
+// TODO: investigate: how this can be provided in such way the user can provide overrides
+$MAIN_PALETTE_SIZE: 14;
+$CONTRASTS: (
+  0.15,
+  0.3,
+  0.5,
+  0.7,
+  0.85,
+  1,
+  0.85,
+  0.7,
+  0.5,
+  0.35,
+  0.20,
+  0.15,
+  0.10,
+  0.05
+);
+
+/**
+  * Returns values compatible with to use as inside custom properties alongside mat-color functions
+*/
+@function hex-to-custom-properties($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+
+@function generate-custom-material-palette($colorOrMap, $name) {
+  @if type-of($colorOrMap) == 'map' {
+    $default: map-get($colorOrMap, default);
+  } @else {
+    $default: $colorOrMap;
+  }
+
+  $auto_map: (
+    default: var(--#{$sidebar-width}-palette-default, hex-to-custom-properties($default)),
+  )
+
+}
+
+@function get-material-palette-index($index) {
+  @return if($index == 0, 50,
+    if($index < 10, $index * 100,
+      if($index == 10, 'A100',
+        if($index == 11, 'A200',
+          if($index == 12, 'A400',
+            if($index == 13, 'A700', '')
+          )
+        )
+      )
+    )
+  );
+}
+
+@function auto-generate-palettes($mainColor, $paletteName) {
+
+  $palette: ();
+  $foregroundPalette: ();
+
+  @for $i from 0 through $MAIN_PALETTE_SIZE {
+    @if $i < 5 {
+      $color: lighten($mainColor, nth($CONTRASTS, $i));
+      $foregroundColor: getForeGroundColor($color);
+      $paletteIndex: get-material-palette-index($i);
+      $palette: append($palette, var(--#{$paletteName}-palette-#{$paletteIndex}, hex-to-custom-properties($color)));
+      $foregroundPalette: append($foregroundPalette, var(--#{$paletteName}-palette-#{$paletteIndex}-foreground, hex-to-custom-properties($foregroundColor)));
+    } @else if $i == 5 {
+      $palette: append($palette, var(--#{$paletteName}-palette-default, hex-to-custom-properties($mainColor)));
+      $foregroundColor: getForeGroundColor($mainColor);
+      $paletteIndex: get-material-palette-index($i);
+      $foregroundPalette: append($foregroundPalette, var(--#{$paletteName}-palette-#{$paletteIndex}-foreground, hex-to-custom-properties($foregroundColor)));
+    } @else {
+      $color: darken($mainColor, nth($CONTRASTS, $i));
+      $foregroundColor: getForeGroundColor($mainColor);
+      $paletteIndex: get-material-palette-index($i);
+      $palette: append($palette, var(--#{$paletteName}-palette-#{$paletteIndex}, hex-to-custom-properties($color)));
+      $foregroundPalette: append($foregroundPalette, var(--#{$paletteName}-palette-#{$paletteIndex}-foreground, hex-to-custom-properties($foregroundColor)));
+    }
+  }
+
+  @return ($palette, $foregroundPalette);
+}
+
+// The range for color brightness difference is 125. The range for color difference is 500. ~ https://www.w3.org/TR/AERT/#color-contrast
+@function isBrightColor($color, $brightFactor: 125) {
+  $o: ((red($color) * 299) + (red($color) * 587) + (red($color) * 114) / 1000);
+  @return $o > $brightFactor;
+}
+// ~
+@function isDiffferentColor($color, $differenceFactor: 500) {
+  @return isBrightColor($color, $differenceFactor);
+}
+
+/**
+  * AutoGenerate foreground colors depending on brightness
+  * http://www.w3.org/TR/AERT#color-contrast
+*/
+@function getForeGroundColor($backgroundColor: #FFFFFF) {
+  @return if(isBrightColor($backgroundColor), #000000, #FFFFFF);
+}
