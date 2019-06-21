@@ -21,8 +21,8 @@ export class ThemingService {
         private appRef: ApplicationRef,
         @Inject(DOCUMENT) private document: any,
     ) {
-        this.rootElementRef = this.appRef.components[0].location;
-        this.initThemingPalettes();
+        // this.rootElementRef = this.appRef.components[0].location;
+        // this.initThemingPalettes();
     }
 
     /**
@@ -65,7 +65,7 @@ export class ThemingService {
      * @param paletteName name of the palette which we want to query about
      * @param ref element ref, helps mark context
      */
-    public getDOMPaletteValues(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
+    /* public getDOMPaletteValues(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
         const paletteCustomProperties =
             ThemingUtil.getCustomProperties(ref, ThemingUtil.getPaletteCustomPropertiesNames(paletteName, true));
         const paletteCustomPropertiesContrast =
@@ -82,7 +82,7 @@ export class ThemingService {
                 hover: paletteCustomPropertiesContrast[3],
             }
         };
-    }
+    } */
 
     /**
      * Get current value of the palette

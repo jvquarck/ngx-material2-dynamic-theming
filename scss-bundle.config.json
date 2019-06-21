@@ -1,0 +1,4 @@
+{
+  "entry": "./projects/material2-dynamic-theming/src/lib/theming.scss",
+  "dest": "./dist/material2-dynamic-theming/."
+}

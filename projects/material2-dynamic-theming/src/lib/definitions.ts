@@ -1,14 +1,7 @@
-export interface PaletteValues {
-  default: string;
-  lighter?: string;
-  darker?: string;
-  hover?: string;
-  contrast?: {
-      default?: string;
-      lighter?: string;
-      darker?: string;
-      hover?: string;
-  };
+import { Gradients } from './utils';
+
+export interface PaletteValues extends Gradients {
+  contrast?: Gradients;
 }
 
 export interface ThemingExtraOptions {
@@ -18,12 +11,9 @@ export interface ThemingExtraOptions {
 
 export enum Palettes {
   primary = 'primary',
-  accent = 'accent',
+  secondary = 'secondary',
   warn = 'warn',
   dark = 'dark',
-  devices = 'devices',
-  events = 'events',
-  messages = 'messages'
 }
 
 export enum CommonPaletteValues {
@@ -45,12 +35,9 @@ export const AUTO_GENERATE_FOREGROUNDS = true;
 
 export const DEFAULT_THEME_PALETTES: PaletteValuesType = {
     primary: '#3F51B5',
-    accent: '#FFD31F',
+    secondary: '#FFD31F',
     dark: '#616161',
-    devices: '#3F51B5',
-    events: '#795548',
     warn: '#F44336',
-    messages: '#673AB7',
 };
 
 export const DEFAULT_THEMING_EXTRA_OPTIONS: ThemingExtraOptions = {

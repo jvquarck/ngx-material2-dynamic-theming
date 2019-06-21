@@ -1,0 +1,34 @@
+<mat-sidenav-container class="app-wrapper">
+  <mat-sidenav-content>
+    <mat-toolbar class="top-nav" color="primary" style="justify-content: space-between;">
+        <button mat-button [(colorPicker)]="colorPrimary" [style.background-color]="colorPrimary" (colorPickerChange)="onColorChange($event, palettes.primary)">
+          Primary
+          <mat-icon>create</mat-icon>
+        </button>
+        <button mat-button [(colorPicker)]="colorSecondary" [style.background]="colorSecondary" (colorPickerChange)="onColorChange($event, palettes.secondary)">
+          Secondary
+          <mat-icon>create</mat-icon>
+        </button>
+        <button mat-button [(colorPicker)]="colorWarn" [style.background]="colorWarn" (colorPickerChange)="onColorChange($event, palettes.warn)">
+          Warning
+          <mat-icon>create</mat-icon>
+        </button>
+        <div class="contrast-rating-wrapper">
+            <span>({{contrastFactor}}) </span>
+            <span *ngIf="contrastFactor < 4.5">Non AA compliant</span>
+            <span *ngIf="contrastFactor >= 4.5 && contrastFactor < 7">AA compliant</span>
+            <span *ngIf="contrastFactor >= 7">AAA compliant</span>
+            <mat-slider
+              color="primary"
+              [max]="7"
+              [min]="0"
+              [step]="0.1"
+              [(ngModel)]="contrastFactor">
+            </mat-slider>
+        </div>
+    </mat-toolbar>
+    <main>
+      <app-dashboard></app-dashboard>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

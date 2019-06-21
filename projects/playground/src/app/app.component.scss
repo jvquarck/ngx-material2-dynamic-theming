@@ -1,0 +1,9 @@
+@import '../theme';
+
+mat-toolbar {
+  background: mat-color($secondaryPalette, 300) !important;
+}
+
+.contrast-rating-wrapper {
+  margin-left: auto;
+}

@@ -1,0 +1,19 @@
+@import "../../material2-dynamic-theming/src/lib/theming";
+
+$primaryColor: #00A0B2;
+$secondaryColor: #9355B7;
+$warnColor: #F44336;
+
+$primaryPalette: mat-palette(auto-generate-palettes($primaryColor, 'primary', 1.25), 500);
+$secondaryPalette: mat-palette(auto-generate-palettes($secondaryColor, 'secondary', 1.25), 500);
+$warnPalette: mat-palette(auto-generate-palettes($warnColor, 'warn', 1.25), 500);
+
+// @debug $primaryPalette;
+$playground-theme: mat-light-theme($primaryPalette, $secondaryPalette, $warnPalette);
+
+//@debug $playground-theme;
+@include angular-material-theme($playground-theme);
+
+button {
+  margin-right: 8px;
+}

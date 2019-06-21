@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@import "theme.scss";
+
+body {
+  margin: 0;
+}
+
+.app-wrapper {
+  mat-sidenav-content > main {
+    padding-top: 64px;
+  }
+}
+
+.top-nav {
+  position: fixed;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 1000;
+}

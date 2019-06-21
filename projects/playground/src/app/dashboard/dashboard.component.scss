@@ -1,0 +1,66 @@
+@import "../../_theme.scss";
+
+.card {
+  min-width: 80%;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  min-width: 100%;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+a {
+  cursor: pointer;
+}
+
+.padding-20 {
+  padding: 20px,
+}
+
+.palette-gradient {
+  div {
+    text-align: center;
+    float: left;
+    height: 100px;
+    width: 20%;
+    position: relative;
+    span {
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      margin-top: -12px;
+      line-height: 1em;
+      font-size: 24px;
+    }
+  }
+}
+
+.palette-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+
+@mixin generateGradients($paletteName, $palette, $gradients) {
+  .palette-gradient-#{$paletteName} {
+    @each $gradient in $gradients {
+      &__#{$gradient} {
+        background: mat-color($palette, $gradient);
+        color: mat-color($palette, #{$gradient}-contrast);
+      }
+    }
+  }
+}
+
+@include generateGradients ('primary', $primaryPalette, $GRADIENTS);
+@include generateGradients ('secondary', $secondaryPalette, $GRADIENTS);
+@include generateGradients ('warn', $warnPalette, $GRADIENTS);

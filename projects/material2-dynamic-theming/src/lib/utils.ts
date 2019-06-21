@@ -1,14 +1,52 @@
 import { ElementRef } from '@angular/core';
-import { color as d3Color, rgb } from 'd3-color';
+import { color as d3Color, rgb, hsl } from 'd3-color';
 // import { getProperty } from '../../../utils/object.utils';
 import { AUTO_GENERATE_FOREGROUNDS, CommonPaletteValues as CommonPaletteValuesEnum, DEFAULT_THEMING_EXTRA_OPTIONS, FOREGROUND_COLORS_BRIGHT_FACTOR, OPACITY_FACTOR, Palettes, PaletteValues, ThemingExtraOptions } from './definitions';
 
-export const DARKENING_K: number = OPACITY_FACTOR;
-export const BRIGHTEN_K: number = OPACITY_FACTOR;
-export const BRIGHTEN_HOVER_K: number = 1;
-export const LIGHT_LIGHTEN_K: number = .9;
-export const LIGHT_DARKEN_K: number = .7;
-export const LIGHT_HOVER_K: number = .5;
+export const DARKENING_K = OPACITY_FACTOR;
+export const BRIGHTEN_K = OPACITY_FACTOR;
+export const BRIGHTEN_HOVER_K = 1;
+export const LIGHT_LIGHTEN_K = .9;
+export const LIGHT_DARKEN_K = .7;
+export const LIGHT_HOVER_K = .5;
+export interface Gradients {
+  50?: number;
+  100?: number;
+  200?: number;
+  300?: number;
+  400?: number;
+  500: number;
+  600?: number;
+  700?: number;
+  800?: number;
+  900?: number;
+  A100?: number;
+  A200?: number;
+  A400?: number;
+  A700?: number;
+}
+export const GRADIENTS_K: Gradients = {
+  50: 0.85,
+  100: 0.7,
+  200: 0.5,
+  300: 0.3,
+  400: 0.15,
+  500: 0,
+  600: 0.05,
+  700: 0.1,
+  800: 0.15,
+  900: 0.25,
+  A100: 0.35,
+  A200: 0.5,
+  A400: 0.65,
+  A700: 0.8,
+};
+export const GRADIENTS = Object.keys(GRADIENTS_K);
+export const DEFAULT_GRADIENT_INDEX = 5;
+export const RED_COEFICIENT = 0.2126;
+export const GREEN_COEFICIENT = 0.7152;
+export const BLUE_COEFICIENT = 0.0722;
+export const LOW_GAMME_ADJUST_COEFICIENT = 1 / 12.92;
 
 const CommonPaletteValues: string[] = Object.values(CommonPaletteValuesEnum);
 
@@ -17,6 +55,7 @@ const CommonPaletteValues: string[] = Object.values(CommonPaletteValuesEnum);
  * @param color hex value color
  * @param background hex value background color
  * @param opacity 0 to 1 opacity value
+ * @deprecated
  */
 export function getSolidColorFromOpacityBackground(color: string, background: string, opacity: number): string {
     const delta: number = 1 - opacity;
@@ -34,10 +73,12 @@ export function getSolidColorFromOpacityBackground(color: string, background: st
  */
 export function getDarkerColor(color: string, k: number): string {
     try {
-        return getSolidColorFromOpacityBackground(color, '#000000', k);
+      const newColor = hsl(color);
+      newColor.l -= newColor.l * k;
+      return newColor;
     } catch (error) {
-        console.warn('d3-color', 'darker', `Wrong color ${ color } provided`);
-        return color;
+      console.warn('d3-color', 'darker', `Wrong color ${ color } provided`);
+      return color;
     }
 }
 
@@ -48,7 +89,10 @@ export function getDarkerColor(color: string, k: number): string {
  */
 export function getBrighterColor(color: string, k: number): string {
     try {
-        return getSolidColorFromOpacityBackground(color, '#FFFFFF', k);
+      // return d3Color(color).brighter(k).hex();
+      const newColor = hsl(color);
+      newColor.l = ((1 - newColor.l) * k) + newColor.l;
+      return newColor
     } catch (error) {
         console.warn('d3-color', 'brighter', `Wrong color ${ color } provided`);
         return color;
@@ -106,24 +150,79 @@ export function getProperty(obj: any, path: string): any {
   return void 0;
 }
 
+function adjustGamma(_) {
+  return Math.pow((_ + 0.055) / 1.055, 2.4);
+}
+
+/**
+ * Given a 3-element array of R, G, B varying from 0 to 255, return the luminance
+ * as a number from 0 to 1.
+ * Many thanks to: https://github.com/tmcw/relative-luminance
+ * @param {string} color hexadecimal color
+ * @returns {number} luminance, between 0 and 1
+ */
+export function relativeLuminance(color: string) {
+  const rgbColor = rgb(color);
+  const rsrgb = rgbColor.r / 255;
+  const gsrgb = rgbColor.g / 255;
+  const bsrgb = rgbColor.b / 255;
+
+  const r = rsrgb <= 0.03928 ? rsrgb * LOW_GAMME_ADJUST_COEFICIENT : adjustGamma(rsrgb);
+  const g = gsrgb <= 0.03928 ? gsrgb * LOW_GAMME_ADJUST_COEFICIENT : adjustGamma(gsrgb);
+  const b = bsrgb <= 0.03928 ? bsrgb * LOW_GAMME_ADJUST_COEFICIENT : adjustGamma(bsrgb);
+
+  return r * RED_COEFICIENT + g * GREEN_COEFICIENT + b * BLUE_COEFICIENT;
+}
+
+/**
+ * Get the contrast ratio between two relative luminance values
+ * Many thanks to: https://github.com/tmcw/wcag-contrast
+ * @param {number} a luminance value
+ * @param {number} b luminance value
+ * @returns {number} contrast ratio
+ * @example
+ * luminance(1, 1); // = 1
+ */
+export function luminance(a, b) {
+  const l1 = Math.max(a, b);
+  const l2 = Math.min(a, b);
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+/**
+ * Returns the contrast ratio given to colors in hexadecimal
+ * Many thanks to: https://github.com/tmcw/wcag-contrast
+ * @param a string hex color a
+ * @param b string hex color b
+ */
+export function contrastRatioCheck(a, b) {
+  return luminance(relativeLuminance(a), relativeLuminance(b));
+}
+
 export class ThemingUtil {
 
     /**
      * Returns the color and its lighter and darker versions [color, lighter, darker]
      * @param color
      */
-    static getColorsFromBase(color: string): [string, string, string, string] {
-        return [
-                ThemingUtil.getColorString(color),
-                ThemingUtil.getColorString(getBrighterColor(color, BRIGHTEN_K)),
-                ThemingUtil.getColorString(getDarkerColor(color, DARKENING_K)),
-                ThemingUtil.getColorString(getBrighterColor(color, BRIGHTEN_HOVER_K)),
-            ];
+    static getColorsFromBase(color: string): string[] {
+      return GRADIENTS.map((gradient, index) => {
+        if (index < DEFAULT_GRADIENT_INDEX) {
+          return ThemingUtil.getColorString(getBrighterColor(color, GRADIENTS_K[gradient]));
+        }
+        if (index === DEFAULT_GRADIENT_INDEX) {
+          return ThemingUtil.getColorString(color);
+        }
+        if (index > DEFAULT_GRADIENT_INDEX) {
+          return ThemingUtil.getColorString(getDarkerColor(color, GRADIENTS_K[gradient]));
+        }
+      });
     }
 
     /**
      * Returns the colors [default, lighten, darken, hover] for a color that is considered 'bright'.
      * @param color
+     * @deprecated
      */
     static getColorsFromLightColor(color: string): [string, string, string, string] {
         return [
@@ -179,17 +278,17 @@ export class ThemingUtil {
      * Set css custom properties based on a palette name and values and onto and onto an ElementRef styles
      * @param elementRef element where custom properties will be set
      * @param paletteValues color values
-     * @param paletteName name of the palette to set
+     * @param paletteName name of theGRADIENTS_K palette to set
      * @param options custom to set if needed
      */
     static setPaletteCustomProperties(elementRef: ElementRef, paletteValues: PaletteValues | string, paletteName: Palettes,
         options?: ThemingExtraOptions) {
         options = { ...DEFAULT_THEMING_EXTRA_OPTIONS, ...options };
         if (!paletteValues) console.error(this, `paletteValues should be <string | PaletteValues>`, paletteValues);
+
         const defaultColor = (typeof paletteValues === 'string') ?
-            ThemingUtil.getHexValueFromColor(paletteValues) : ThemingUtil.getHexValueFromColor(paletteValues.default);
-        const autoColors: [string, string, string, string] = options.autoAdjust && ThemingUtil.getIsBright(defaultColor, options.brightnessFactor)
-            ? ThemingUtil.getColorsFromLightColor(defaultColor) : ThemingUtil.getColorsFromBase(defaultColor);
+            ThemingUtil.getHexValueFromColor(paletteValues) : ThemingUtil.getHexValueFromColor(paletteValues[GRADIENTS[DEFAULT_GRADIENT_INDEX]]);
+        const autoColors: string[] = ThemingUtil.getColorsFromBase(defaultColor);
         const autoContrasts = autoColors.map(ThemingUtil.getHexValueFromColor).map(ThemingUtil.getForegroundColorW3C).map(ThemingUtil.getColorString);
         const customProperties: { [k: string]: any } = {};
         const paletteKeys = ThemingUtil.getPaletteCustomPropertiesNames(paletteName, false);
@@ -198,23 +297,21 @@ export class ThemingUtil {
         if (AUTO_GENERATE_FOREGROUNDS) {
             const contrastKeys = ThemingUtil.getPaletteCustomPropertiesNames(paletteName, true);
             contrastKeys.forEach((key: string, index: number) =>
-                customProperties[contrastKeys[index]] = getProperty(paletteValues, `contrast.${ contrastKeys[index] }`) || autoContrasts[index]);
+                customProperties[contrastKeys[index]] = getProperty(paletteValues, `foreground.${ contrastKeys[index] }`) || autoContrasts[index]);
         }
         ThemingUtil.setCustomProperties(elementRef, customProperties);
     }
 
     /**
      * Return custom property keys for a palette
-     * @param contrast flag indicating to return contrast custom properties keys
+     * @param foreground flag indicating to return foreground custom properties keys
      */
-    static getPaletteCustomPropertiesNames(paletteName: string, contrast: boolean = false): [string, string, string, string] {
-        const contrastModifier: string = !contrast ? '' : 'contrast-';
-        return [
-            `--${ paletteName }-palette-${ contrastModifier }default`,
-            `--${ paletteName }-palette-${ contrastModifier }lighter`,
-            `--${ paletteName }-palette-${ contrastModifier }darker`,
-            `--${ paletteName }-palette-${ contrastModifier }hover`,
-        ];
+    static getPaletteCustomPropertiesNames(paletteName: string, foreground: boolean = false): string[] {
+        const contrastModifier: string = !foreground ? '' : '-foreground';
+
+        return GRADIENTS.map((gradient, index) => {
+          return `--${ paletteName }-palette-${gradient}${ contrastModifier }`;
+        });
     }
 
     /**
@@ -231,16 +328,16 @@ export class ThemingUtil {
 
     /**
      * AutoGenerate foreground color based on a background color
-     * http://www.w3.org/TR/AERT#color-contrast
+     * http://www.w3.org/TR/AERT#color-foreground
      * @param backgroundColor background color from which the foreground color will be calculated
      */
-    static getForegroundColorW3C(backgroundColor: string): string {
-        return ThemingUtil.getIsBright(backgroundColor, FOREGROUND_COLORS_BRIGHT_FACTOR) ?  '#000000' : '#FFFFFF';
+    static getForegroundColorW3C(backgroundColor: string, contrastRatio: number = 4.5): string {
+      return (contrastRatioCheck(backgroundColor, '#000000') > contrastRatio) ? '#000000' : '#FFFFFF';
     }
 
     /**
      * Resolve if color is bright (otherwise is dark)
-     * http://www.w3.org/TR/AERT#color-contrast
+     * http://www.w3.org/TR/AERT#color-foreground
      * @param color value to check if bright or dark should be applied
      * @param brightFactor value from 0 to 255 that specifies the limit where this color is considered 'Bright'
      */
@@ -249,4 +346,5 @@ export class ThemingUtil {
         const o = Math.round(((dColor.r * 299) + (dColor.g * 587) + (dColor.b * 114)) / 1000);
         return o > brightFactor;
     }
+
 }
