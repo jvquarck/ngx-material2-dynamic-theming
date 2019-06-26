@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "material2-dynamic-theming": [
-        "dist/material2-dynamic-theming"
+      "ngx-material2-dynamic-theming": [
+        "dist/ngx-material2-dynamic-theming"
       ],
-      "material2-dynamic-theming/*": [
-        "dist/material2-dynamic-theming/*"
+      "ngx-material2-dynamic-theming/*": [
+        "dist/ngx-material2-dynamic-theming/*"
       ]
     }
   }

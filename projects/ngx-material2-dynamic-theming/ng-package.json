@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/material2-dynamic-theming",
+  "dest": "../../dist/ngx-material2-dynamic-theming",
   "lib": {
     "entryFile": "src/public-api.ts"
   }

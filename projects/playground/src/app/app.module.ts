@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MaterialModule } from './material.module';
 import { PostDialogComponent } from './post-dialog/post-dialog.component';
-import { ThemingService } from '../../../material2-dynamic-theming/src/lib/theming.service';
+import { ThemingService } from '../../../ngx-material2-dynamic-theming/src/lib/theming.service';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MatGridListModule, MatIconModule, MatSliderModule } from '@angular/material';
 

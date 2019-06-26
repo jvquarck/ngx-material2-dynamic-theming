@@ -16,7 +16,7 @@ module.exports = function (config) {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../../coverage/material2-dynamic-theming'),
+      dir: require('path').join(__dirname, '../../coverage/ngx-material2-dynamic-theming'),
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },

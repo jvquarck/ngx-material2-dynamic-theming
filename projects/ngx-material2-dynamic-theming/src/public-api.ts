@@ -1,5 +1,5 @@
 /*
- * Public API Surface of material2-dynamic-theming
+ * Public API Surface of ngx-material2-dynamic-theming
  */
 
 export * from './lib/theming.service';

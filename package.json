@@ -1,13 +1,13 @@
 {
-  "name": "material2-dynamic-theming",
+  "name": "ngx-material2-dynamic-theming",
   "version": "1.0.0-alpha",
   "description": "Dynamic theming using custom properties for @angular/material2: https://github.com/angular/material2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:lib": "ng build material2-dynamic-theming",
-    "build:lib:watch": "ng build material2-dynamic-theming --watch",
+    "build:lib": "ng build ngx-material2-dynamic-theming",
+    "build:lib:watch": "ng build ngx-material2-dynamic-theming --watch",
     "postbuild:lib": "scss-bundle -c scss-bundle.config.json",
     "test": "ng test",
     "lint": "ng lint",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jvquarck/material2-dynamic-theming.git"
+    "url": "git+https://github.com/jvquarck/ngx-material2-dynamic-theming.git"
   },
   "keywords": [
     "angular",
@@ -28,9 +28,9 @@
   "author": "Josep Viñals",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/jvquarck/material2-dynamic-theming/issues"
+    "url": "https://github.com/jvquarck/ngx-material2-dynamic-theming/issues"
   },
-  "homepage": "https://github.com/jvquarck/material2-dynamic-theming#readme",
+  "homepage": "https://github.com/jvquarck/ngx-material2-dynamic-theming#readme",
   "dependencies": {
     "@angular/animations": "~7.2.0",
     "@angular/cdk": "~7.3.6",

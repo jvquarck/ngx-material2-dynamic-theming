@@ -256,11 +256,13 @@ export class ThemingUtil {
      * @param elementRef elementRef element where custom properties will be retrieved from
      * @param customProperties list of properties to get
      */
-    static getCustomProperties(elementRef: ElementRef, customProperties: string[]) {
+    static getCustomProperties(elementRef: ElementRef, customProperties: string[]): PaletteValues {
         const styles = getComputedStyle(elementRef.nativeElement);
-        return customProperties.map((propertyName: string) => {
-            return styles.getPropertyValue(propertyName);
+        const result: PaletteValues = {} as PaletteValues;
+        customProperties.forEach((propertyName: string) => {
+            result[propertyName] = styles.getPropertyValue(propertyName);
         });
+        return result;
     }
 
     /**

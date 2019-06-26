@@ -21,8 +21,10 @@ export class ThemingService {
         private appRef: ApplicationRef,
         @Inject(DOCUMENT) private document: any,
     ) {
-        // this.rootElementRef = this.appRef.components[0].location;
-        // this.initThemingPalettes();
+      if (this.appRef.components && this.appRef.components[0] && this.appRef.components[0].location) {
+        this.rootElementRef = this.appRef.components[0].location;
+        this.initThemingPalettes();
+      }
     }
 
     /**
@@ -65,24 +67,13 @@ export class ThemingService {
      * @param paletteName name of the palette which we want to query about
      * @param ref element ref, helps mark context
      */
-    /* public getDOMPaletteValues(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
+    public getDOMPaletteValues(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
         const paletteCustomProperties =
-            ThemingUtil.getCustomProperties(ref, ThemingUtil.getPaletteCustomPropertiesNames(paletteName, true));
+            ThemingUtil.getCustomProperties(ref, ThemingUtil.getPaletteCustomPropertiesNames(paletteName, false));
         const paletteCustomPropertiesContrast =
             ThemingUtil.getCustomProperties(ref, ThemingUtil.getPaletteCustomPropertiesNames(paletteName, true));
-        return {
-            default: paletteCustomProperties[0],
-            lighter: paletteCustomProperties[1],
-            darker: paletteCustomProperties[2],
-            hover: paletteCustomProperties[3],
-            contrast: {
-                default: paletteCustomPropertiesContrast[0],
-                lighter: paletteCustomPropertiesContrast[1],
-                darker: paletteCustomPropertiesContrast[2],
-                hover: paletteCustomPropertiesContrast[3],
-            }
-        };
-    } */
+        return { ...paletteCustomProperties, ...{ contrast: paletteCustomPropertiesContrast }};
+    }
 
     /**
      * Get current value of the palette

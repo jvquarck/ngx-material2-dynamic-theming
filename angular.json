@@ -3,33 +3,33 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "material2-dynamic-theming": {
-      "root": "projects/material2-dynamic-theming",
-      "sourceRoot": "projects/material2-dynamic-theming/src",
+    "ngx-material2-dynamic-theming": {
+      "root": "projects/ngx-material2-dynamic-theming",
+      "sourceRoot": "projects/ngx-material2-dynamic-theming/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/material2-dynamic-theming/tsconfig.lib.json",
-            "project": "projects/material2-dynamic-theming/ng-package.json"
+            "tsConfig": "projects/ngx-material2-dynamic-theming/tsconfig.lib.json",
+            "project": "projects/ngx-material2-dynamic-theming/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/material2-dynamic-theming/src/test.ts",
-            "tsConfig": "projects/material2-dynamic-theming/tsconfig.spec.json",
-            "karmaConfig": "projects/material2-dynamic-theming/karma.conf.js"
+            "main": "projects/ngx-material2-dynamic-theming/src/test.ts",
+            "tsConfig": "projects/ngx-material2-dynamic-theming/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-material2-dynamic-theming/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/material2-dynamic-theming/tsconfig.lib.json",
-              "projects/material2-dynamic-theming/tsconfig.spec.json"
+              "projects/ngx-material2-dynamic-theming/tsconfig.lib.json",
+              "projects/ngx-material2-dynamic-theming/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -162,5 +162,5 @@
       }
     }
   },
-  "defaultProject": "material2-dynamic-theming"
+  "defaultProject": "ngx-material2-dynamic-theming"
 }

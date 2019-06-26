@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { DataService } from '../data/data.service';
 import { Post } from '../definitions';
 import { PostDialogComponent } from '../post-dialog/post-dialog.component';
-import { GRADIENTS } from 'projects/material2-dynamic-theming/src/lib/utils';
+import { GRADIENTS } from 'projects/ngx-material2-dynamic-theming/src/lib/utils';
 
 @Component({
   selector: 'app-dashboard',
