@@ -5,7 +5,7 @@ import { deepCopy } from './utils';
 import { ThemingUtil } from './utils';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { distinctUntilChanged, pluck, filter } from 'rxjs/operators';
 
 /**
  *  Rationale: This provider is a singleton and should be injected only once, since it styles the application when constructor is executed
@@ -15,16 +15,19 @@ import { distinctUntilChanged, pluck } from 'rxjs/operators';
 export class ThemingService {
 
     private currentPalettes$: BehaviorSubject<PaletteValuesType> = new BehaviorSubject<PaletteValuesType>(DEFAULT_THEME_PALETTES);
-    private readonly rootElementRef: ElementRef;
+    private rootElementRef: ElementRef;
 
     constructor(
         private appRef: ApplicationRef,
         @Inject(DOCUMENT) private document: any,
     ) {
-      if (this.appRef.components && this.appRef.components[0] && this.appRef.components[0].location) {
-        this.rootElementRef = this.appRef.components[0].location;
-        this.initThemingPalettes();
-      }
+      /* this.appRef.isStable.pipe(filter(stable => stable))
+        .subscribe(() => {
+          if (this.appRef.components && this.appRef.components[0] && this.appRef.components[0].location) {
+            this.rootElementRef = this.appRef.components[0].location;
+            this.initThemingPalettes();
+          }
+        }); */
     }
 
     /**

@@ -101,6 +101,13 @@ export function getBrighterColor(color: string, k: number): string {
     }
 }
 
+/**
+ * Generate random hex color
+ */
+export function generateRandomHexColor(): string {
+  return ThemingUtil.getHexValueFromColor(`${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}`);
+}
+
 // full credit to: http://geniuscarrier.com/copy-object-in-javascript/
 /**
  * Shallow copy keeps references to original objects, arrays or functions within the new object,
@@ -270,7 +277,17 @@ export class ThemingUtil {
         const defaultColor = (typeof paletteValues === 'string') ?
             ThemingUtil.getHexValueFromColor(paletteValues) : ThemingUtil.getHexValueFromColor(paletteValues[GRADIENTS[DEFAULT_GRADIENT_INDEX]]);
         const autoColors: string[] = ThemingUtil.getColorsFromBase(defaultColor);
-        const autoContrasts = autoColors.map(ThemingUtil.getHexValueFromColor).map(c => ThemingUtil.getForegroundColorW3C(c, options.contrastRatio)).map(ThemingUtil.getColorString);
+        if (paletteValues instanceof Object) {
+          Object.keys(paletteValues).forEach((key) => {
+            if (key !== 'contrast') autoColors[ThemingUtil.findGradientIndex(key)] = ThemingUtil.getColorString(paletteValues[key]);
+          });
+        }
+        let autoContrasts = autoColors.map(ThemingUtil.getHexValueFromColor).map(c => ThemingUtil.getForegroundColorW3C(c, options.contrastRatio)).map(ThemingUtil.getColorString);
+        if (paletteValues instanceof Object && paletteValues.hasOwnProperty('contrast')) {
+          Object.keys(paletteValues.contrast).forEach((key) => {
+            autoContrasts[ThemingUtil.findGradientIndex(key)] = ThemingUtil.getColorString(paletteValues.contrast[key]);
+          });
+        }
         const customProperties: { [k: string]: any } = {};
         const paletteKeys = ThemingUtil.getPaletteCustomPropertiesNames(paletteName, false);
         paletteKeys.forEach((key: string, index: number) =>
@@ -281,6 +298,14 @@ export class ThemingUtil {
                 customProperties[contrastKeys[index]] = getProperty(paletteValues, `foreground.${ contrastKeys[index] }`) || autoContrasts[index]);
         }
         ThemingUtil.setCustomProperties(elementRef, customProperties);
+    }
+
+    /**
+     * Returns the index position for this gradient in the palette gradients
+     * @param gradientKey key for the desired gradient to find
+     */
+    static findGradientIndex(gradientKey: string) {
+      return Object.keys(GRADIENTS_K).indexOf(gradientKey);
     }
 
     /**
@@ -313,10 +338,10 @@ export class ThemingUtil {
      * @param backgroundColor background color from which the foreground color will be calculated
      */
     static getForegroundColorW3C(backgroundColor: string, contrastRatio: number = 4.5): string {
-      const blackContrastCheck = contrastRatioCheck(backgroundColor, '#000000');
-      const whiteContrastCheck = contrastRatioCheck(backgroundColor, '#FFFFFF');
-      return (whiteContrastCheck > contrastRatio) ? '#FFFFFF' :
-        whiteContrastCheck > blackContrastCheck ? '#FFFFFF' : '#000000';
+      const blackContrastCheck = contrastRatioCheck(backgroundColor, blackColor);
+      const whiteContrastCheck = contrastRatioCheck(backgroundColor, whiteColor);
+      return (whiteContrastCheck > contrastRatio) ? whiteColor :
+        whiteContrastCheck > blackContrastCheck ? whiteColor : blackColor;
     }
 
 }

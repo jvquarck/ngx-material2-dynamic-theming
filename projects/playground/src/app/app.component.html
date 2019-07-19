@@ -13,6 +13,14 @@
           Warning
           <mat-icon>create</mat-icon>
         </button>
+        <div class="random-gradient-wrapper">
+          <mat-slide-toggle
+              color="primary"
+              [checked]="false"
+              (change)="onRandomGradientSettingChange($event)">
+            Activate random shade generation
+          </mat-slide-toggle>
+        </div>
         <div class="contrast-rating-wrapper">
             <span>({{contrastRatio}}) </span>
             <span *ngIf="contrastRatio < 4.5">Non AA compliant</span>
