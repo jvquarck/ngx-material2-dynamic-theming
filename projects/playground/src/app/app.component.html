@@ -1,29 +1,30 @@
 <mat-sidenav-container class="app-wrapper">
   <mat-sidenav-content>
     <mat-toolbar class="top-nav" color="primary" style="justify-content: space-between;">
-        <button mat-button [(colorPicker)]="colorPrimary" [style.background-color]="colorPrimary" (colorPickerChange)="onColorChange($event, palettes.primary)">
+        <button mat-flat-button [colorPicker]="colors.primary" color="primary" (colorPickerChange)="onColorChange($event, palettes.primary)">
           Primary
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-button [(colorPicker)]="colorSecondary" [style.background]="colorSecondary" (colorPickerChange)="onColorChange($event, palettes.secondary)">
+        <button mat-flat-button [colorPicker]="colors.secondary"  color="accent" (colorPickerChange)="onColorChange($event, palettes.secondary)">
           Secondary
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-button [(colorPicker)]="colorWarn" [style.background]="colorWarn" (colorPickerChange)="onColorChange($event, palettes.warn)">
+        <button mat-flat-button [colorPicker]="colors.warn" color="warn" (colorPickerChange)="onColorChange($event, palettes.warn)">
           Warning
           <mat-icon>create</mat-icon>
         </button>
         <div class="contrast-rating-wrapper">
-            <span>({{contrastFactor}}) </span>
-            <span *ngIf="contrastFactor < 4.5">Non AA compliant</span>
-            <span *ngIf="contrastFactor >= 4.5 && contrastFactor < 7">AA compliant</span>
-            <span *ngIf="contrastFactor >= 7">AAA compliant</span>
+            <span>({{contrastRatio}}) </span>
+            <span *ngIf="contrastRatio < 4.5">Non AA compliant</span>
+            <span *ngIf="contrastRatio >= 4.5 && contrastRatio < 7">AA compliant</span>
+            <span *ngIf="contrastRatio >= 7">AAA compliant</span>
             <mat-slider
               color="primary"
               [max]="7"
               [min]="0"
               [step]="0.1"
-              [(ngModel)]="contrastFactor">
+              [value]="contrastRatio"
+              (input)="onContrastFactorChange($event.value)">
             </mat-slider>
         </div>
     </mat-toolbar>

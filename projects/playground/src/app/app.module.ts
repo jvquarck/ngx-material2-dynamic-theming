@@ -10,6 +10,7 @@ import { PostDialogComponent } from './post-dialog/post-dialog.component';
 import { ThemingService } from '../../../ngx-material2-dynamic-theming/src/lib/theming.service';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MatGridListModule, MatIconModule, MatSliderModule } from '@angular/material';
+import { SubThemingComponent } from './sub-theming/sub-theming.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { MatGridListModule, MatIconModule, MatSliderModule } from '@angular/mate
     AppComponent,
     DashboardComponent,
     PostDialogComponent,
+    SubThemingComponent,
   ],
   imports: [
     BrowserModule,

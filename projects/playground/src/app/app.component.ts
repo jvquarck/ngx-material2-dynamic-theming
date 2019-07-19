@@ -1,34 +1,42 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { ThemingService, Palettes, PaletteValues } from '../../../ngx-material2-dynamic-theming/src/public-api';
+import { Component, ElementRef, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { ThemingService, Palettes, ThemingUtil } from '../../../ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['app.component.scss']
+  styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  colorPrimary: any = '#000000';
-  colorSecondary: any = '#000000';
-  colorWarn: any = '#000000';
+export class AppComponent implements AfterViewInit {
+  colors: { [key in Palettes]?: string } = {
+    primary: '#00a0b2',
+    secondary: '#9355b7',
+    warn: '#f44336',
+  };
   title = 'playground';
   palettes = Palettes;
-  contrastFactor: number = 4.5;
+  contrastRatio: number = 4.5;
 
   constructor(
     private themingService: ThemingService,
     private elementRef: ElementRef,
   ) {}
 
-  ngOnInit(): void {
-    this.colorPrimary = this.themingService.getDOMPaletteValues(Palettes.primary, this.elementRef)[500];
-    this.colorSecondary = this.themingService.getDOMPaletteValues(Palettes.secondary, this.elementRef)[500];
-    this.colorWarn = this.themingService.getDOMPaletteValues(Palettes.warn, this.elementRef)[500];
+  ngAfterViewInit(): void {
+    this.onContrastFactorChange(this.contrastRatio);
+  }
+
+  onContrastFactorChange(value: number): void {
+    this.contrastRatio = value;
+    Object.keys(this.colors).forEach((key: Palettes) => {
+      this.onColorChange(this.colors[key], key);
+    });
   }
 
   onColorChange(color: string, palette: Palettes) {
+    this.colors[palette] = color;
     this.themingService.setThemingPalette(this.elementRef, color, palette, {
       autoAdjust: true,
-      brightnessFactor: 0.1,
+      contrastRatio: this.contrastRatio,
     });
   }
 }

@@ -1,12 +1,12 @@
-import { Gradients } from './utils';
+import { GradientsColors } from './utils';
 
-export interface PaletteValues extends Gradients {
-  contrast?: Gradients;
+export interface PaletteValues extends GradientsColors {
+  contrast?: GradientsColors;
 }
 
 export interface ThemingExtraOptions {
-  autoAdjust: boolean; // If true, check if the derived colors from the default one need some extra adjusting based on 'brightnessFactor' property.
-  brightnessFactor?: number;
+  autoAdjust: boolean; // If true, check if the derived colors from the default one need some extra adjusting based on 'contrastRatio' property.
+  contrastRatio?: number;
 }
 
 export enum Palettes {
@@ -42,5 +42,5 @@ export const DEFAULT_THEME_PALETTES: PaletteValuesType = {
 
 export const DEFAULT_THEMING_EXTRA_OPTIONS: ThemingExtraOptions = {
     autoAdjust: false,
-    brightnessFactor: BACKGROUND_COLORS_BRIGHT_FACTOR
+    contrastRatio: BACKGROUND_COLORS_BRIGHT_FACTOR
 };

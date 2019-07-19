@@ -1,5 +1,9 @@
 @import '../theme';
 
+::ng-deep * {
+  transition: background-color 0.175s ease;
+}
+
 mat-toolbar {
   background: mat-color($secondaryPalette, 300) !important;
 }

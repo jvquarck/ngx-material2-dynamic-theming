@@ -4,7 +4,7 @@
 @include mat-core();
 
 // Apply monkey patches
-@import 'mat.monkey-patch';
+@import 'angular-components.overrides';
 
 
 // TODO: investigate: how this can be provided in such way the user can provide overrides
