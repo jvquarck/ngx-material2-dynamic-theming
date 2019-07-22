@@ -1,12 +1,13 @@
 {
   "name": "ngx-material2-dynamic-theming",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "Dynamic theming using custom properties for @angular/material2: https://github.com/angular/material2",
   "scripts": {
     "ng": "ng",
     "start": "npm run build:lib:watch & ng serve",
     "build": "ng build",
-    "build:lib": "ng build ngx-material2-dynamic-theming",
+    "build:lib": "ng build ngx-material2-dynamic-theming && npm run copy:readme",
+    "copy:readme": "copyfiles ./README.md ./dist/ngx-material2-dynamic-theming",
     "build:lib:watch": "ng build ngx-material2-dynamic-theming --watch",
     "postbuild:lib": "scss-bundle -c scss-bundle.config.json",
     "test": "ng test",
@@ -59,6 +60,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
+    "copyfiles": "^2.1.1",
     "hammerjs": "^2.0.8",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
