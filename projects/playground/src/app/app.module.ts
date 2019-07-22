@@ -6,18 +6,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MaterialModule } from './material.module';
-import { PostDialogComponent } from './post-dialog/post-dialog.component';
-import { ThemingService } from '../../../ngx-material2-dynamic-theming/src/lib/theming.service';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MatGridListModule, MatIconModule, MatSliderModule } from '@angular/material';
 import { SubThemingComponent } from './sub-theming/sub-theming.component';
+import { ThemingModule } from 'projects/ngx-material2-dynamic-theming/src/public-api';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    PostDialogComponent,
     SubThemingComponent,
   ],
   imports: [
@@ -30,9 +28,17 @@ import { SubThemingComponent } from './sub-theming/sub-theming.component';
     FlexLayoutModule,
     FormsModule,
     ColorPickerModule,
+    ThemingModule.forRoot({
+      extra: {
+        contrastRatio: 1.3,
+      },
+      palettes: {
+        primary: '#00a0b2',
+        secondary: '#9355b7',
+        warn: '#f44336',
+      }
+    }),
   ],
-  providers: [ThemingService],
-  entryComponents: [PostDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

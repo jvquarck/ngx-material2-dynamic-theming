@@ -1,4 +1,4 @@
 {
-  "entry": "./projects/ngx-material2-dynamic-theming/src/lib/theming.scss",
-  "dest": "./dist/ngx-material2-dynamic-theming/."
+  "entry": "./projects/ngx-material2-dynamic-theming/src/lib/_theming.scss",
+  "dest": "./dist/ngx-material2-dynamic-theming/_theming.scss"
 }

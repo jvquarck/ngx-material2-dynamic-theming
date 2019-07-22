@@ -1,64 +1,63 @@
 import { ApplicationRef, ElementRef, Inject, Injectable } from '@angular/core';
-import { Palettes, PaletteValues, ThemingExtraOptions } from './definitions';
-import { DEFAULT_THEME_PALETTES, PaletteValuesType } from './definitions';
+import { Palettes, PaletteValues, ThemingExtraOptions, ThemingOptions } from './definitions';
+import { PaletteValuesType } from './definitions';
 import { deepCopy } from './utils';
 import { ThemingUtil } from './utils';
-import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck, filter } from 'rxjs/operators';
+import { distinctUntilChanged, pluck, filter, first } from 'rxjs/operators';
+import { ThemingModule, DYNAMIC_THEMING_OPTIONS } from './theming.module';
 
-/**
- *  Rationale: This provider is a singleton and should be injected only once, since it styles the application when constructor is executed
- *  Pitfall: YOU MUST NOT provide this service via a component decorator, component providers won't respect `providedIn: 'root'` property value.
- */
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: ThemingModule })
 export class ThemingService {
 
-    private currentPalettes$: BehaviorSubject<PaletteValuesType> = new BehaviorSubject<PaletteValuesType>(DEFAULT_THEME_PALETTES);
+    private currentPalettes$: BehaviorSubject<PaletteValuesType> = new BehaviorSubject<PaletteValuesType>(this.themingOptions.palettes as PaletteValuesType);
     private rootElementRef: ElementRef;
 
     constructor(
         private appRef: ApplicationRef,
-        @Inject(DOCUMENT) private document: any,
+        @Inject(DYNAMIC_THEMING_OPTIONS) private themingOptions: ThemingOptions,
     ) {
-      /* this.appRef.isStable.pipe(filter(stable => stable))
+      this.appRef.isStable.pipe(
+          filter(stable => stable),
+          first(),
+        )
         .subscribe(() => {
           if (this.appRef.components && this.appRef.components[0] && this.appRef.components[0].location) {
             this.rootElementRef = this.appRef.components[0].location;
             this.initThemingPalettes();
           }
-        }); */
+        });
     }
 
     /**
-     * Set the theming palette for a given scope/elementRef
+     * Set a palette for a specific ElementRef
      * @param elementRef
      * @param paletteValue
      * @param paletteName
      */
-    public setThemingPalette(elementRef: ElementRef, paletteValue: PaletteValues | string, paletteName: Palettes,
+    public setPalette(elementRef: ElementRef, paletteValue: PaletteValues | string, paletteName: Palettes,
         options?: ThemingExtraOptions): void {
-        ThemingUtil.setPaletteCustomProperties(elementRef, paletteValue, paletteName, options);
+        ThemingUtil.setPaletteCustomProperties(elementRef, paletteValue, paletteName, this.getExtraOptions(options));
     }
 
     /**
-     * Set the theming palette application wide
+     * Set a palette in the application root
      * @param paletteValue
      * @param paletteName
      */
-    public setThemingPaletteForRoot(paletteValue: PaletteValues | string, paletteName: Palettes, options?: ThemingExtraOptions): void {
-        ThemingUtil.setPaletteCustomProperties(this.rootElementRef, paletteValue, paletteName, options);
-        ThemingUtil.setPaletteCustomProperties(this.rootElementRef, paletteValue, <any>`${ paletteName }-root`, options); // save for root
+    public setPaletteForRoot(paletteValue: PaletteValues | string, paletteName: Palettes, options?: ThemingExtraOptions): void {
+        ThemingUtil.setPaletteCustomProperties(this.rootElementRef, paletteValue, paletteName, this.getExtraOptions(options));
+        ThemingUtil.setPaletteCustomProperties(this.rootElementRef, paletteValue, <any>`${ paletteName }-root`, this.getExtraOptions(options)); // save for root
         const defaultPalettes: any = deepCopy(this.currentPalettes$.value);
         defaultPalettes[paletteName] = paletteValue;
         this.currentPalettes$.next(defaultPalettes);
     }
 
     /**
-     * Observable that will push changes to the requested palette
-     * @param palette name of the palette
+     * Observable that emits changes for a selected palette
+     * @param palette palette name
      */
-    public getPaletteObservable(palette: Palettes): Observable<PaletteValues | string | {}> {
+    public getPaletteChanges(palette: Palettes): Observable<PaletteValues | string | {}> {
         return this.currentPalettes$.pipe(
             pluck(palette),
             distinctUntilChanged()
@@ -66,11 +65,11 @@ export class ThemingService {
     }
 
     /**
-     * Get palette values given a palette name and a ref (could be current component or app root)
-     * @param paletteName name of the palette which we want to query about
-     * @param ref element ref, helps mark context
+     * Retrieve palette values from the DOM checking the ElementRef custom properties
+     * @param paletteName name of the desired palette
+     * @param ref element ref to query
      */
-    public getDOMPaletteValues(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
+    public getPaletteValuesFromDOM(paletteName: Palettes, ref: ElementRef = this.rootElementRef): PaletteValues {
         const paletteCustomProperties =
             ThemingUtil.getCustomProperties(ref, ThemingUtil.getPaletteCustomPropertiesNames(paletteName, false));
         const paletteCustomPropertiesContrast =
@@ -79,11 +78,20 @@ export class ThemingService {
     }
 
     /**
-     * Get current value of the palette
-     * @param palette name of the palette
+     * Get application root value of a palette
+     * @param palette name of the desired palette
      */
     public getPalette(palette: Palettes): PaletteValues | string {
         return this.currentPalettes$.value[palette];
+    }
+
+    /**
+     * Extend provided options with the ones provided in the token via forRoot
+     * @param options
+     * @internal
+     */
+    private getExtraOptions(options: ThemingExtraOptions = {}) {
+      return {...this.themingOptions.extra, ...options };
     }
 
     /**
@@ -91,16 +99,9 @@ export class ThemingService {
      */
     private initThemingPalettes(): void {
         Object.keys(this.currentPalettes$.value).forEach((palette: Palettes) => {
-            ThemingUtil.setPaletteCustomProperties(this.rootElementRef, DEFAULT_THEME_PALETTES[palette], palette);
-            ThemingUtil.setPaletteCustomProperties(this.rootElementRef, DEFAULT_THEME_PALETTES[palette], <any>`${ palette }-root`); // save for root
+            ThemingUtil.setPaletteCustomProperties(this.rootElementRef, this.themingOptions.palettes[palette], palette, this.getExtraOptions());
+            ThemingUtil.setPaletteCustomProperties(this.rootElementRef, this.themingOptions.palettes[palette], <any>`${ palette }-root`, this.getExtraOptions()); // save for root
         });
-    }
-
-    /**
-     * Temporary showcase method, initiates the change of the theme palettes to random color values
-     */
-    private initThemeDemo(): void {
-        // TODO: maybe integrate with some music?
     }
 
 }

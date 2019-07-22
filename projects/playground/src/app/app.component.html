@@ -1,15 +1,15 @@
 <mat-sidenav-container class="app-wrapper">
   <mat-sidenav-content>
     <mat-toolbar class="top-nav" color="primary" style="justify-content: space-between;">
-        <button mat-flat-button [colorPicker]="colors.primary" color="primary" (colorPickerChange)="onColorChange($event, palettes.primary)">
+        <button mat-flat-button [colorPicker]="colors.primary[500] ? colors.primary[500] : colors.primary" color="primary" (colorPickerChange)="onColorChange($event, palettes.primary)">
           Primary
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-flat-button [colorPicker]="colors.secondary"  color="accent" (colorPickerChange)="onColorChange($event, palettes.secondary)">
+        <button mat-flat-button [colorPicker]="colors.secondary[500] ? colors.secondary[500] : colors.secondary"  color="accent" (colorPickerChange)="onColorChange($event, palettes.secondary)">
           Secondary
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-flat-button [colorPicker]="colors.warn" color="warn" (colorPickerChange)="onColorChange($event, palettes.warn)">
+        <button mat-flat-button [colorPicker]="colors.warn[500] ? colors.warn[500] : colors.warn" color="warn" (colorPickerChange)="onColorChange($event, palettes.warn)">
           Warning
           <mat-icon>create</mat-icon>
         </button>
@@ -18,7 +18,7 @@
               color="primary"
               [checked]="false"
               (change)="onRandomGradientSettingChange($event)">
-            Activate random shade generation
+            Activate: override of gradient autogeneration
           </mat-slide-toggle>
         </div>
         <div class="contrast-rating-wrapper">

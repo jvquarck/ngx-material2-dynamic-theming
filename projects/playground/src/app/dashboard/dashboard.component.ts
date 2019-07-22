@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DataService } from '../data/data.service';
-import { GRADIENTS } from 'projects/ngx-material2-dynamic-theming/src/lib/utils';
+import { GRADIENTS } from 'projects/ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,7 +11,7 @@ export class DashboardComponent {
 
   gradients = GRADIENTS;
 
-  constructor(public dialog: MatDialog, private dataService: DataService) {
+  constructor(public dialog: MatDialog) {
   }
 
 }

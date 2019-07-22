@@ -1,10 +1,10 @@
 {
   "name": "ngx-material2-dynamic-theming",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "Dynamic theming using custom properties for @angular/material2: https://github.com/angular/material2",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run build:lib:watch & ng serve",
     "build": "ng build",
     "build:lib": "ng build ngx-material2-dynamic-theming",
     "build:lib:watch": "ng build ngx-material2-dynamic-theming --watch",

@@ -1,8 +1,3 @@
-@import '~@angular/material/theming';
-
-// Include mat-core so we can monkey patch
-@include mat-core();
-
 // Apply monkey patches
 @import 'angular-components.overrides';
 
@@ -125,7 +120,6 @@ $AAA_CONTRAST_SCORE: 7;
  * @param   number      $power          Power to which it should be raised.
  * @return  number      $exponent       Number raised to exponent.
  */
-
  @function power($number, $power) {
   $exponent: 1;
 

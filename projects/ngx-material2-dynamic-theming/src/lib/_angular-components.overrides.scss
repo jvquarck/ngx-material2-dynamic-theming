@@ -1,15 +1,11 @@
-// This file overries angular material methods and MUST be imported after `@import '~@angular/material/theming';` and `@include mat-core();`
-
-// Detect if the $var is a css var
- @function is-css-var($var) {
-  @if (str-index(inspect($var), 'var') != null) {
+@function is-css-var($var) {
+  @if (str-index(inspect($var), "var") != null) {
     @return true;
   } @else {
     @return false;
   }
 }
 
-// @Overrides: ~/@angular/material/_theming.scss @ mat-color
 @function mat-color($palette, $hue: default, $opacity: null) {
   @if type-of($hue) == number and $hue >= 0 and $hue <= 1 {
     @return mat-color($palette, default, $hue);

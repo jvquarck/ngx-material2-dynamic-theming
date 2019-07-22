@@ -1,46 +1,39 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { ThemingService, Palettes, GRADIENTS_K, generateRandomHexColor } from '../../../ngx-material2-dynamic-theming/src/public-api';
+import { Component, Inject } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material';
+import { Palettes, ThemingService, deepCopy, GRADIENTS_K, generateRandomHexColor, DYNAMIC_THEMING_OPTIONS, ThemingOptions, PaletteValuesType } from 'projects/ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  colors: { [key in Palettes]?: string } = {};
+export class AppComponent {
+  colors: Partial<PaletteValuesType> = {};
   title = 'playground';
   palettes = Palettes;
-  contrastRatio: number = 4.5;
+  contrastRatio: number = this.themingOptions.extra.contrastRatio;
 
-  private originalColors = {
-    primary: '#00a0b2',
-    secondary: '#9355b7',
-    warn: '#f44336',
-  };
+  private originalColors = this.themingOptions.palettes;
 
   constructor(
     private themingService: ThemingService,
-    private elementRef: ElementRef,
+    @Inject(DYNAMIC_THEMING_OPTIONS) private themingOptions: ThemingOptions,
   ) {
-  }
-
-  ngOnInit(): void {
-    this.onContrastFactorChange(this.contrastRatio);
+    this.colors = deepCopy(this.originalColors);
   }
 
   onContrastFactorChange(value: number): void {
     this.contrastRatio = value;
-    Object.keys(this.colors).forEach((key: Palettes) => {
-      this.onColorChange(this.colors[key], key);
+    Object.keys(this.colors).forEach(key => {
+      this.onColorChange(this.colors[key], key as Palettes);
     });
   }
 
   onRandomGradientSettingChange(value: MatSlideToggleChange): void {
     if (value.checked) {
-      Object.keys(this.colors).forEach((key: Palettes) => {
+      Object.keys(this.colors).forEach((key) => {
         this.colors[key] = this.getRandomColorPalette(this.colors[key]);
-        this.onColorChange(this.colors[key], key);
+        this.onColorChange(this.colors[key], key as Palettes);
       });
     } else {
       this.setOriginalColors();
@@ -49,9 +42,8 @@ export class AppComponent implements OnInit {
   }
 
   onColorChange(color: string, palette: Palettes) {
-    this.colors[palette] = color;
-    this.themingService.setThemingPalette(this.elementRef, color, palette, {
-      autoAdjust: true,
+    this.colors[`${palette}`] = color;
+    this.themingService.setPaletteForRoot(color, palette, {
       contrastRatio: this.contrastRatio,
     });
   }
@@ -71,6 +63,8 @@ export class AppComponent implements OnInit {
     const randomPalette = {};
     randomPalette[500] = color;
     randomPalette[gradientKey] = generateRandomHexColor();
+    randomPalette['contrast'] = {};
+    randomPalette['contrast'][gradientKey] = generateRandomHexColor();
     return randomPalette;
   }
 }

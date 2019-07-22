@@ -1,10 +1,21 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { ThemingOptions, DEFAULT_THEMING_OPTIONS } from './definitions';
 
-// TODO: configuration: add forRoot provisioning of configuration
-@NgModule({
-  declarations: [],
-  imports: [
-  ],
-  exports: []
-})
-export class ThemingModule { }
+@NgModule()
+export class ThemingModule {
+  static forRoot(options: ThemingOptions = {}): ModuleWithProviders {
+
+    return ({
+      ngModule: ThemingModule,
+      providers: [
+        {
+          provide: DYNAMIC_THEMING_OPTIONS,
+          useValue: { ...DEFAULT_THEMING_OPTIONS, ...options },
+        },
+      ]
+    });
+
+  }
+}
+
+export const DYNAMIC_THEMING_OPTIONS = new InjectionToken<ThemingOptions>("forRoot() Default theming configuration");
