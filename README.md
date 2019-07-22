@@ -25,10 +25,10 @@ Helper library, allows dynamic theming using custom properties for @angular/mate
 
 ## Installation
 
-First you need to install the npm module (coming soon):
+Execute the following command to install the npm module:
 
 ```sh
-npm install ... --save
+npm install ngx-material2-dynamic-theming --save
 ```
 
 ## Usage
