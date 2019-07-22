@@ -1,6 +1,6 @@
 {
   "name": "ngx-material2-dynamic-theming",
-  "version": "1.0.1-beta",
+  "version": "1.0.2-beta",
   "description": "Dynamic theming using custom properties for @angular/material2: https://github.com/angular/material2",
   "scripts": {
     "ng": "ng",
@@ -10,6 +10,8 @@
     "copy:readme": "copyfiles ./README.md ./dist/ngx-material2-dynamic-theming",
     "build:lib:watch": "ng build ngx-material2-dynamic-theming --watch",
     "postbuild:lib": "scss-bundle -c scss-bundle.config.json",
+    "build:playground:git": "ng build --prod --base-href \"https://jvquarck.github.io/ngx-material2-dynamic-theming/\" playground",
+    "publish:playground:git": "ngh --dir=dist/playground",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

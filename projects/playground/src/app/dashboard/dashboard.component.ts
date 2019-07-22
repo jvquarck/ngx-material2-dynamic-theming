@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { GRADIENTS } from 'projects/ngx-material2-dynamic-theming/src/public-api';
+import { GRADIENTS } from '../../../../ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-dashboard',

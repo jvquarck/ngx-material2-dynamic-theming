@@ -1,13 +1,13 @@
 import { ApplicationRef, ElementRef, Inject, Injectable } from '@angular/core';
-import { Palettes, PaletteValues, ThemingExtraOptions, ThemingOptions } from './definitions';
+import { Palettes, PaletteValues, ThemingExtraOptions, ThemingOptions, DEFAULT_THEMING_OPTIONS } from './definitions';
 import { PaletteValuesType } from './definitions';
 import { deepCopy } from './utils';
 import { ThemingUtil } from './utils';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, pluck, filter, first } from 'rxjs/operators';
-import { ThemingModule, DYNAMIC_THEMING_OPTIONS } from './theming.module';
+import { DYNAMIC_THEMING_OPTIONS } from './theming.module';
 
-@Injectable({ providedIn: ThemingModule })
+@Injectable({ providedIn: 'root' })
 export class ThemingService {
 
     private currentPalettes$: BehaviorSubject<PaletteValuesType> = new BehaviorSubject<PaletteValuesType>(this.themingOptions.palettes as PaletteValuesType);
@@ -91,7 +91,7 @@ export class ThemingService {
      * @internal
      */
     private getExtraOptions(options: ThemingExtraOptions = {}) {
-      return {...this.themingOptions.extra, ...options };
+      return {...DEFAULT_THEMING_OPTIONS, ...this.themingOptions.extra, ...options };
     }
 
     /**

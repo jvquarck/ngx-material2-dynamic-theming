@@ -10,7 +10,7 @@ export class ThemingModule {
       providers: [
         {
           provide: DYNAMIC_THEMING_OPTIONS,
-          useValue: { ...DEFAULT_THEMING_OPTIONS, ...options },
+          useValue: options,
         },
       ]
     });

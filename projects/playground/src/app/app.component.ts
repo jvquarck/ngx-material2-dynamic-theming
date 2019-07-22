@@ -1,24 +1,28 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material';
-import { Palettes, ThemingService, deepCopy, GRADIENTS_K, generateRandomHexColor, DYNAMIC_THEMING_OPTIONS, ThemingOptions, PaletteValuesType } from 'projects/ngx-material2-dynamic-theming/src/public-api';
+import { Palettes, ThemingService, deepCopy, GRADIENTS_K, generateRandomHexColor, DYNAMIC_THEMING_OPTIONS, ThemingOptions, PaletteValuesType } from '../../../ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   colors: Partial<PaletteValuesType> = {};
   title = 'playground';
   palettes = Palettes;
-  contrastRatio: number = this.themingOptions.extra.contrastRatio;
+  contrastRatio: number;
 
-  private originalColors = this.themingOptions.palettes;
+  private originalColors;
 
   constructor(
     private themingService: ThemingService,
     @Inject(DYNAMIC_THEMING_OPTIONS) private themingOptions: ThemingOptions,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.contrastRatio = this.themingOptions.extra.contrastRatio;
+    this.originalColors = this.themingOptions.palettes;
     this.colors = deepCopy(this.originalColors);
   }
 

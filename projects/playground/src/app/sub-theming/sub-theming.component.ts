@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ThemingService, Palettes, ThemingUtil } from 'projects/ngx-material2-dynamic-theming/src/public-api';
+import { ThemingService, Palettes, ThemingUtil } from '../../../../ngx-material2-dynamic-theming/src/public-api';
 
 @Component({
   selector: 'app-sub-theming',

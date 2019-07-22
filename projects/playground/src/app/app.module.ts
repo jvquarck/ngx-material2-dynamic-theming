@@ -9,7 +9,7 @@ import { MaterialModule } from './material.module';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MatGridListModule, MatIconModule, MatSliderModule } from '@angular/material';
 import { SubThemingComponent } from './sub-theming/sub-theming.component';
-import { ThemingModule } from 'projects/ngx-material2-dynamic-theming/src/public-api';
+import { ThemingModule } from '../../../ngx-material2-dynamic-theming/src/public-api';
 
 
 @NgModule({
